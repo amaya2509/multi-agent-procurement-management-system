@@ -3,14 +3,17 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+import json
 
 # Ensure the project root is in PYTHONPATH
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from src.graph import run_procurement_workflow
+from src.graph import run_procurement_workflow, build_graph
+from src.state import ProcurementState
 
 app = FastAPI(title="Multi-Agent Procurement API", version="1.0.0")
 
@@ -79,6 +82,57 @@ async def run_workflow(request: RunRequest):
             state=final_state
         )
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/stream")
+async def stream_workflow(request: RunRequest):
+    """
+    Streams the Multi-Agent System execution in real-time via Server-Sent Events (SSE).
+    """
+    if not request.input.strip():
+        raise HTTPException(status_code=400, detail="Input text cannot be empty.")
+    
+    def event_generator():
+        graph = build_graph()
+        initial_state: ProcurementState = {
+            "user_request": request.input,
+            "parsed_request": None,
+            "supplier_options": [],
+            "selected_supplier": None,
+            "purchase_order": None,
+            "approval_status": None,
+            "logs": [],
+            "error": None,
+        }
+        
+        try:
+            # LangGraph `.stream` with `stream_mode="updates"` yields a dict of updates per node.
+            for step_update in graph.stream(initial_state, stream_mode="updates"):
+                yield f"data: {json.dumps(step_update)}\n\n"
+            
+            # Send explicit termination
+            yield f"data: [DONE]\n\n"
+        except Exception as e:
+            error_data = {"__error__": str(e)}
+            yield f"data: {json.dumps(error_data)}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+@app.get("/history/logs")
+async def get_execution_history():
+    """
+    Returns the raw content of logs/execution.log.
+    """
+    log_path = Path(__file__).resolve().parent / "logs" / "execution.log"
+    if not log_path.exists():
+        return {"content": "No execution log found."}
+    
+    try:
+        # Read the last ~1000 lines, or the whole file
+        with open(log_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            return {"content": "".join(lines[-1000:])}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
