@@ -92,21 +92,11 @@ def _log_entry(
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
-    Build a structured log entry dict.
-
-    Args:
-        agent:    Agent name (e.g. 'CoordinatorAgent').
-        event:    Event type identifier (e.g. 'workflow_start').
-        message:  Human-readable description.
-        metadata: Optional additional key-value context.
-
-    Returns:
-        Structured log entry dict.
+    Build a structured log entry dict in the required format.
     """
     return {
         "agent": agent,
-        "event": event,
-        "message": message,
+        "step": message,
+        "output": metadata,
         "timestamp": datetime.now(tz=timezone.utc).isoformat(),
-        **(metadata or {}),
     }

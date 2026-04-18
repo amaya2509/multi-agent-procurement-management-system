@@ -107,5 +107,5 @@ class ProcurementState(TypedDict, total=False):
     approval_status: Optional[ApprovalStatus]
 
     # ── Observability ────────────────────────────────────────────────────────
-    logs: list[dict[str, Any]]   # Structured agent-level log entries
+    logs: list[dict[str, Any]]   # Structured agent-level log entries (agent, step, output, timestamp)
     error: Optional[str]          # Set on unrecoverable failures

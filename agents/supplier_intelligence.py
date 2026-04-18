@@ -175,8 +175,7 @@ def _log_entry(
 ) -> dict[str, Any]:
     return {
         "agent": agent,
-        "event": event,
-        "message": message,
+        "step": message,
+        "output": metadata,
         "timestamp": datetime.now(tz=timezone.utc).isoformat(),
-        **(metadata or {}),
     }
