@@ -1,0 +1,67 @@
+{
+  "departments": {
+    "IT": {
+      "annual_budget": 150000.00,
+      "quarterly_budget": 37500.00,
+      "per_order_limit": 20000.00,
+      "currency": "USD",
+      "approver": "CTO",
+      "requires_dual_approval_above": 10000.00
+    },
+    "HR": {
+      "annual_budget": 50000.00,
+      "quarterly_budget": 12500.00,
+      "per_order_limit": 8000.00,
+      "currency": "USD",
+      "approver": "HR Director",
+      "requires_dual_approval_above": 5000.00
+    },
+    "Finance": {
+      "annual_budget": 40000.00,
+      "quarterly_budget": 10000.00,
+      "per_order_limit": 7000.00,
+      "currency": "USD",
+      "approver": "CFO",
+      "requires_dual_approval_above": 5000.00
+    },
+    "Operations": {
+      "annual_budget": 80000.00,
+      "quarterly_budget": 20000.00,
+      "per_order_limit": 15000.00,
+      "currency": "USD",
+      "approver": "COO",
+      "requires_dual_approval_above": 8000.00
+    },
+    "Marketing": {
+      "annual_budget": 60000.00,
+      "quarterly_budget": 15000.00,
+      "per_order_limit": 10000.00,
+      "currency": "USD",
+      "approver": "CMO",
+      "requires_dual_approval_above": 6000.00
+    },
+    "Engineering": {
+      "annual_budget": 120000.00,
+      "quarterly_budget": 30000.00,
+      "per_order_limit": 25000.00,
+      "currency": "USD",
+      "approver": "VP Engineering",
+      "requires_dual_approval_above": 12000.00
+    },
+    "General": {
+      "annual_budget": 30000.00,
+      "quarterly_budget": 7500.00,
+      "per_order_limit": 5000.00,
+      "currency": "USD",
+      "approver": "Department Head",
+      "requires_dual_approval_above": 3000.00
+    }
+  },
+  "global_rules": {
+    "minimum_quotes_required": 3,
+    "emergency_purchase_limit": 2000.00,
+    "preferred_payment_terms": ["Net 30", "Net 45"],
+    "tax_rate": 0.08,
+    "currency": "USD"
+  }
+}
